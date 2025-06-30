@@ -7,8 +7,8 @@ author: "Otabek"
 email: "otabekoff@example.com"
 
 # Telegram Channel Configuration
-telegram_channel: "https://t.me/yourchannel"
-telegram_channel_name: "@yourchannel"
+telegram_channel: "https://t.me/Foydali_qollanmalar"
+telegram_channel_name: "@Foydali_qollanmalar"
 
 # Build settings
 markdown: kramdown
@@ -54,7 +54,7 @@ timezone: UTC
 social:
   name: "Otabek"
   links:
-    - https://t.me/yourchannel
+    - https://t.me/MirzoIbnFaxriddin
     - https://github.com/otabekoff
 
 # SEO settings
