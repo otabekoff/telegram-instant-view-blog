@@ -115,7 +115,6 @@
                 <h1 class="site-title">
                     <a href="{{ '/' | relative_url }}" rel="home">{{ site.title }}</a>
                 </h1>
-                
                 <nav class="site-nav" role="navigation" aria-label="Main navigation">
                     <ul class="nav-links">
                         <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
@@ -127,7 +126,7 @@
                         </a></li>
                         {% endif %}
                         <li>
-                            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" tabindex="0">
                                 <span class="theme-toggle-icon sun">☀️</span>
                                 <div class="theme-toggle-slider"></div>
                                 <span class="theme-toggle-icon moon">🌙</span>
