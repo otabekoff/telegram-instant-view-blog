@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}" prefix="og: https://ogp.me/ns#">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+    
+    <!-- SEO and Meta Tags -->
+    {% seo %}
+    
+    <!-- Enhanced Open Graph for Telegram -->
+    <meta property="og:site_name" content="{{ site.title }}">
+    <meta property="og:locale" content="{{ site.lang | default: 'en_US' }}">
+    {% if page.layout == 'post' %}
+    <meta property="og:type" content="article">
+    <meta property="article:author" content="{{ page.author | default: site.author }}">
+    <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+    <meta property="article:modified_time" content="{{ page.date | date_to_xmlschema }}">
+    {% if page.categories %}
+    {% for category in page.categories %}
+    <meta property="article:section" content="{{ category }}">
+    {% endfor %}
+    {% endif %}
+    {% if page.tags %}
+    {% for tag in page.tags %}
+    <meta property="article:tag" content="{{ tag }}">
+    {% endfor %}
+    {% endif %}
+    {% else %}
+    <meta property="og:type" content="website">
+    {% endif %}
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@{{ site.author }}">
+    
+    <!-- Telegram Instant View Optimizations -->
+    <meta name="telegram:channel" content="{{ site.telegram_channel_name }}">
+    
+    <!-- Structured Data for Articles -->
+    {% if page.layout == 'post' %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "{{ page.title }}",
+        "name": "{{ page.title }}",
+        {% if page.excerpt %}"description": "{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}",{% endif %}
+        "image": "{{ page.image | default: site.url | append: site.baseurl | append: '/assets/images/default-og.png' }}",
+        "url": "{{ page.url | absolute_url }}",
+        "datePublished": "{{ page.date | date_to_xmlschema }}",
+        "dateModified": "{{ page.date | date_to_xmlschema }}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ page.author | default: site.author }}",
+            "url": "{{ site.url }}{{ site.baseurl }}/about/"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "{{ site.title }}",
+            "url": "{{ site.url }}{{ site.baseurl }}",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ site.url }}{{ site.baseurl }}/assets/images/logo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ page.url | absolute_url }}"
+        }
+    }
+    </script>
+    {% else %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{ site.title }}",
+        "description": "{{ site.description }}",
+        "url": "{{ site.url }}{{ site.baseurl }}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ site.author }}"
+        }
+    }
+    </script>
+    {% endif %}
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ '/assets/favicon.ico' | relative_url }}">
+    
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | relative_url }}">
+</head>
+<body>
+    <header class="site-header" role="banner">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="site-title">
+                    <a href="{{ '/' | relative_url }}" rel="home">{{ site.title }}</a>
+                </h1>
+                
+                <nav class="site-nav" role="navigation" aria-label="Main navigation">
+                    <ul class="nav-links">
+                        <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
+                        <li><a href="{{ '/about/' | relative_url }}" {% if page.url contains '/about/' %}class="active"{% endif %}>About</a></li>
+                        <li><a href="{{ '/archive/' | relative_url }}" {% if page.url contains '/archive/' %}class="active"{% endif %}>Archive</a></li>
+                        {% if site.telegram_channel %}
+                        <li><a href="{{ site.telegram_channel }}" target="_blank" rel="noopener" class="telegram-link">
+                            <span class="emoji">📱</span> {{ site.telegram_channel_name }}
+                        </a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="site-content" role="main">
+        <div class="container">
+            {{ content }}
+        </div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <p class="copyright">&copy; {{ 'now' | date: '%Y' }} {{ site.title }}. Built with Jekyll & GitHub Pages.</p>
+                {% if site.telegram_channel %}
+                <p class="telegram-promo">
+                    <span class="emoji">📱</span> 
+                    <a href="{{ site.telegram_channel }}" target="_blank" rel="noopener">Follow {{ site.telegram_channel_name }}</a> 
+                    for instant notifications
+                </p>
+                {% endif %}
+                <p class="rss-link">
+                    <a href="{{ '/feed.xml' | relative_url }}" target="_blank" rel="noopener">RSS Feed</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Telegram Web App Support -->
+    <script>
+        // Optimize for Telegram Web App if available
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+    </script>
+</body>
+</html>
