@@ -61,33 +61,15 @@ layout: default
         </div>
     </footer>
     {% endif %}
-    
-    <!-- Social Sharing optimized for Telegram -->
-    <aside class="post-sharing" role="complementary">
-        <h3><span class="emoji">📤</span> Share this post</h3>
-        <div class="sharing-buttons">
-            <a href="https://t.me/share/url?url={{ page.url | absolute_url | url_encode }}&text={{ page.title | url_encode }}" 
-               target="_blank" rel="noopener" class="share-telegram">
-                <span class="emoji">📱</span> Share on Telegram
-            </a>
-            {% if site.telegram_channel %}
-            <a href="{{ site.telegram_channel }}" target="_blank" rel="noopener" class="join-channel">
-                <span class="emoji">🔔</span> Join our Channel
-            </a>
-            {% endif %}
-            <a href="https://twitter.com/intent/tweet?url={{ page.url | absolute_url | url_encode }}&text={{ page.title | url_encode }}" 
-               target="_blank" rel="noopener" class="share-twitter">
-                <span class="emoji">🐦</span> Share on Twitter
-            </a>
-        </div>
-        
-        <!-- Instant View Call-to-Action -->
-        <div class="instant-view-cta">
-            <p><strong><span class="emoji">⚡</span> Instant View:</strong> 
-            This post is optimized for Telegram's Instant View. When shared on Telegram, 
-            it loads instantly with perfect formatting!</p>
-        </div>
-    </aside>
+</article>
+
+<!-- Instant View Test Section (only visible to IV template) -->
+<section class="instant-view-metadata" style="display: none;">
+    <meta name="iv:title" content="{{ page.title }}">
+    <meta name="iv:author" content="{{ page.author | default: site.author }}">
+    <meta name="iv:published" content="{{ page.date | date_to_xmlschema }}">
+    <meta name="iv:description" content="{{ page.excerpt | default: page.description | default: site.description | strip_html | strip_newlines | truncate: 160 }}">
+</section>
 </article>
 
 <!-- Related Posts -->

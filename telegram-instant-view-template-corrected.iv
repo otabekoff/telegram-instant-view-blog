@@ -1,0 +1,64 @@
+# ===== TELEGRAM INSTANT VIEW TEMPLATE v2.1 (CORRECTED) =====
+# Based on official Telegram IV documentation and checklist
+# For Jekyll blog: otabekoff.github.io/telegram-instant-view-blog
+
+~version: "2.1"
+
+# ===== TARGETING CONDITIONS =====
+# Target only blog post pages with article content
+?exists: $("article.post")
+
+# Skip home page and listing pages  
+?not_exists: $(".posts-grid")
+
+# ===== REQUIRED PROPERTIES =====
+# Title (required)
+title: $("h1.post-title")
+
+# Body (required)  
+body: $("div.post-content")
+
+# ===== OPTIONAL PROPERTIES =====
+# Author 
+author: $(".post-author span[itemprop='name']")
+
+# Publication date
+published_date: $("time.post-date")
+@datetime: $published_date
+
+# Site name for link preview
+site_name: "Telegram Instant View Blog"
+
+# Channel promotion (optional)
+channel: "@Foydali_qollanmalar"
+
+# ===== BASIC CLEANUP =====
+# Remove navigation and non-essential elements
+@remove: //nav
+@remove: //header[not(has-class("post-header"))]
+@remove: //footer[not(has-class("post-footer"))]
+@remove: //aside[not(has-class("post-aside"))]
+@remove: //.sidebar
+@remove: //.widget
+@remove: //.social-share
+@remove: //.sharing-buttons
+@remove: //.comments
+
+# Remove scripts and styles (keep essential ones)
+@remove: //script[not(contains(@src, "gist.github.com"))]
+@remove: //style
+@remove: //noscript
+
+# ===== BASIC CONTENT PROCESSING =====
+# Handle images with srcset (automatic in v2.1)
+# Handle basic embeds
+<iframe>: $body//script[starts-with(@src,"https://gist.github.com/")]
+
+# Mark unsupported complex elements
+@unsupported: $body//canvas
+@unsupported: $body//form
+@unsupported: $body//embed[not(@src)]
+@unsupported: $body//object
+
+# Final body processing
+<article>: $body

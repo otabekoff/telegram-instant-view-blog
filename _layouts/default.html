@@ -8,7 +8,7 @@
     <!-- SEO and Meta Tags -->
     {% seo %}
     
-    <!-- Enhanced Open Graph for Telegram -->
+    <!-- Enhanced Open Graph for Telegram Instant View -->
     <meta property="og:site_name" content="{{ site.title }}">
     <meta property="og:locale" content="{{ site.lang | default: 'en_US' }}">
     {% if page.layout == 'post' %}
@@ -47,6 +47,8 @@
     
     <!-- Telegram Instant View Optimizations -->
     <meta name="telegram:channel" content="{{ site.telegram_channel_name }}">
+    <meta name="instant-view" content="enabled">
+    <meta name="instant-view:template" content="telegram-instant-view-blog">
     
     <!-- Structured Data for Articles -->
     {% if page.layout == 'post' %}

@@ -1,0 +1,17 @@
+# ===== ULTRA-MINIMAL TELEGRAM INSTANT VIEW TEMPLATE =====
+# Start with the absolute minimum to test if IV generation works
+
+~version: "2.1"
+
+# Target only article pages
+?exists: $("article.post")
+
+# Required properties only
+title: $("h1.post-title")
+body: $("div.post-content")
+
+# Basic optional properties
+author: $(".post-author span[itemprop='name']")
+published_date: $("time.post-date")
+@datetime: $published_date
+site_name: "Telegram Instant View Blog"
