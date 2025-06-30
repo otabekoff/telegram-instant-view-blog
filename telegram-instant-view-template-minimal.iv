@@ -1,0 +1,96 @@
+# ===== TELEGRAM INSTANT VIEW TEMPLATE FOR JEKYLL BLOG =====
+# Optimized specifically for otabekoff.github.io/telegram-instant-view-blog
+# Based on v2.1 syntax but simplified for reliability
+
+# ===== TARGETING CONDITIONS =====
+# Only generate IV for blog post pages
+?exists: $("article.post")
+
+# Skip non-content pages
+?not_exists: $(".posts-grid")
+?not_exists: $(".archive")
+
+# ===== CONTENT EXTRACTION =====
+
+# Title from post header
+title: $("h1.post-title")
+
+# Author from post meta
+author: $(".post-author span[itemprop='name']")
+
+# Publication date
+published_date: $("time.post-date")
+@datetime: $published_date
+
+# Main article body content
+body: $(".post-content")
+
+# ===== CLEANUP =====
+
+# Remove site navigation and footer
+@remove: //nav
+@remove: //header[not(has-class("post-header"))]
+@remove: //footer
+
+# Remove post metadata (already extracted)
+@remove: //.post-meta
+@remove: //.post-tags
+@remove: //.post-footer
+
+# Remove sharing and related content
+@remove: //.post-sharing
+@remove: //.sharing-buttons
+@remove: //.related-posts
+
+# Remove comments and scripts
+@remove: //script
+@remove: //style
+@remove: //comment()
+
+# ===== FINAL PROCESSING =====
+
+# Simplify extracted elements
+@simplify: $title
+@simplify: $author
+@simplify: $published_date
+
+# Convert body to article and simplify
+<article>: $body
+@simplify: $body
+
+# Mark as processed
+body!
+
+# ===== META INFORMATION =====
+# For link previews and SEO
+
+?true
+
+# Extract site information
+site_name: "Telegram Instant View Blog"
+channel: "@Foydali_qollanmalar"
+
+# Enhanced meta extraction
+$head: /html/head
+$meta: $head/meta
+
+# Title fallbacks
+title: $meta[@property="og:title"]/@content
+title: $meta[@name="twitter:title"]/@content
+title: $head/title
+
+# Description extraction
+description: $meta[@property="og:description"]/@content
+description: $meta[@name="twitter:description"]/@content
+description: $meta[@name="description"]/@content
+
+# Image extraction
+image_url: $meta[@property="og:image"]/@content
+image_url: $meta[@name="twitter:image"]/@content
+
+# Publication date
+published_date: $meta[@property="article:published_time"]/@content
+published_date: $meta[@name="article:published_time"]/@content
+
+# Author extraction
+author: $meta[@name="author"]/@content

@@ -1,0 +1,317 @@
+# ===== TELEGRAM INSTANT VIEW TEMPLATE v2.1 =====
+# Updated template for modern Telegram Instant View 2.1 syntax
+# Compatible with all current IV features and optimizations
+
+# ===== TARGETING CONDITIONS =====
+# Only generate Instant View for actual blog posts/articles
+?exists: $("article.post")
+
+# Skip non-content pages (home, archive, category pages)
+?not_exists: $(".archive")
+?not_exists: $(".category")  
+?not_exists: $(".tag-page")
+?not_exists: $(".home")
+?not_exists: $(".posts-grid")
+
+# ===== CONTENT EXTRACTION =====
+
+# Title extraction with multiple fallbacks
+title: $("h1.post-title").first()
+
+# Subtitle/excerpt support  
+subtitle: $(".post-excerpt").first()
+
+# Kicker (category/section) support
+kicker: $(".post-categories a").first()
+
+# Author extraction with structured data support
+author: $(".post-author span[itemprop='name']").first()
+
+# Publication date with proper datetime formatting
+published_date: $("time.post-date").first()
+@datetime: $published_date
+
+# Cover image handling - no cover images in this blog structure
+# cover: handled in main content
+
+# ===== MAIN CONTENT BODY =====
+body: $(".post-content")
+
+# ===== ADVANCED CONTENT PROCESSING =====
+
+# Handle lazy-loaded images
+@set_attr(src, @data-src): $body//img[@data-src]
+@remove_attr(data-src): $body//img[@data-src]
+
+# Handle responsive images
+@set_attr(src, @data-original): $body//img[@data-original]
+@remove_attr(data-original): $body//img[@data-original]
+
+# Optimize image loading
+@set_attr(loading, "lazy"): $body//img
+@remove_attr(width): $body//img
+@remove_attr(height): $body//img
+
+# ===== WIDGET TRANSFORMATIONS =====
+
+# Twitter embeds (updated for v2.1)
+@before(<iframe>, \
+  src, ".//a[starts-with(@href, \"https://twitter.com/\") or starts-with(@href, \"https://x.com/\")][contains(@href, \"/status/\")]/@href", \
+  class, "twitter-tweet" \
+): $body//blockquote[has-class("twitter-tweet")]
+@remove: $body//blockquote[has-class("twitter-tweet")]
+
+# Enhanced Twitter video support
+@before(<iframe>, \
+  src, ".//a[starts-with(@href, \"https://twitter.com/\") or starts-with(@href, \"https://x.com/\")][contains(@href, \"/status/\")]/@href", \
+  class, "twitter-video" \
+): $body//blockquote[has-class("twitter-video")]
+@remove: $body//blockquote[has-class("twitter-video")]
+
+# YouTube embeds (improved)
+$youtube: $body//iframe[contains(@src, "youtube.com/embed/") or contains(@src, "youtu.be/")]
+@set_attr(class, "youtube-video"): $youtube
+
+# Instagram embeds (updated)
+@before(<iframe>, \
+  src, ".//a[contains(@href, \"instagram.com/p/\") or contains(@href, \"instagram.com/reel/\")]/@href", \
+  class, "instagram-media" \
+): $body//blockquote[has-class("instagram-media")]
+@remove: $body//blockquote[has-class("instagram-media")]
+
+# TikTok embeds (new in v2.1)
+@before(<iframe>, \
+  src, ".//a[contains(@href, \"tiktok.com/\")]/@href", \
+  class, "tiktok-embed" \
+): $body//blockquote[has-class("tiktok-embed")]
+@remove: $body//blockquote[has-class("tiktok-embed")]
+
+# Facebook posts and videos (enhanced)
+$fb_post: $body//div[has-class("fb-post")][@data-href]
+@urlencode: $fb_post/@data-href
+@set_attr(data-src, "https://www.facebook.com/plugins/post.php?href=", @data-href, "&show_text=true&width=640"): $fb_post
+@before(<iframe>, src, @data-src, class, "fb-post"): $fb_post
+@remove: $fb_post
+
+$fb_video: $body//div[has-class("fb-video")][@data-href]
+@urlencode: $fb_video/@data-href
+@set_attr(data-src, "https://www.facebook.com/plugins/video.php?href=", @data-href, "&show_text=true&width=640"): $fb_video
+@before(<iframe>, src, @data-src, class, "fb-video"): $fb_video
+@remove: $fb_video
+
+# Telegram posts (enhanced)
+$tg_post: $body//*[self::script or self::blockquote][@data-telegram-post]
+@set_attr(data-src, "https://t.me/", @data-telegram-post, "?embed=1"): $tg_post
+@set_attr(data-src, @data-src, "&userpic=", @data-userpic): $tg_post[@data-userpic]
+@set_attr(data-src, @data-src, "&single=1"): $tg_post[@data-single]
+@before(<iframe>, src, @data-src, class, "telegram-post"): $tg_post
+@remove: $tg_post
+
+# GitHub Gists (improved)
+<iframe>: $body//script[starts-with(@src,"https://gist.github.com/")]
+
+# Spotify embeds (new)
+$spotify: $body//iframe[contains(@src, "spotify.com/embed/")]
+@set_attr(class, "spotify-embed"): $spotify
+
+# SoundCloud embeds (new)
+$soundcloud: $body//iframe[contains(@src, "soundcloud.com/")]
+@set_attr(class, "soundcloud-embed"): $soundcloud
+
+# ===== ENHANCED ANCHOR SUPPORT =====
+@before(<anchor>, name, @name): $body//a[@name]
+@before(<anchor>, name, @id): $body//*[@id]
+
+# ===== IMPROVED RTL SUPPORT =====
+<bdi>: $body//span[@dir="ltr" or @dir="rtl" or @dir="auto"]
+<bdi>: $body//*[@lang and @dir]
+
+# ===== TABLE HANDLING (v2.1 improvement) =====
+@preserve_formatting: $body//table[not(.//table)]
+@wrap(<figure>): $body//table[not(.//table)]
+
+# ===== LIST FORMATTING =====
+@preserve_formatting: $body//ul
+@preserve_formatting: $body//ol
+@preserve_formatting: $body//dl
+
+# ===== CODE BLOCK HANDLING =====
+@preserve_formatting: $body//pre
+@preserve_formatting: $body//code
+@wrap(<figure>): $body//pre[has-class("highlight") or has-class("code")]
+
+# ===== QUOTE FORMATTING =====
+@preserve_formatting: $body//blockquote
+
+# ===== UNSUPPORTED ELEMENTS =====
+@unsupported: $body//embed
+@unsupported: $body//object
+@unsupported: $body//canvas
+@unsupported: $body//table//table
+@unsupported: $body//form
+@unsupported: $body//input
+@unsupported: $body//select
+@unsupported: $body//textarea
+
+# Modern unsupported elements (v2.1)
+@unsupported: $body//video[not(@src) and not(.//source[@src])]
+@unsupported: $body//audio[not(@src) and not(.//source[@src])]
+
+# Unsupported widgets
+@unsupported: $body//div[has-class("reddit-card")]
+@unsupported: $body//div[has-class("reddit-embed")]
+@unsupported: $body//div[has-class("playbuzz")][@data-item]
+@unsupported: $body//blockquote[has-class("imgur-embed-pub")]
+
+# ===== CLEANUP OPERATIONS =====
+
+# Remove comments, scripts, and styles
+@remove: //comment()
+@remove: $body//script[not(contains(@src, "gist.github.com"))]
+@remove: $body//style
+@remove: $body//noscript
+
+# Remove navigation and UI elements
+@remove: //nav
+@remove: //header[not(has-class("post-header"))]
+@remove: //footer[not(has-class("post-footer"))]
+@remove: //.navigation
+@remove: //.navbar
+@remove: //.menu
+
+# Remove sidebars and widgets  
+@remove: //aside[not(has-class("post-aside"))]
+@remove: //.sidebar
+@remove: //.widget
+@remove: //.widgets
+
+# Remove social and sharing elements
+@remove: //.social-share
+@remove: //.sharing-buttons
+@remove: //.share-buttons
+@remove: //.social-icons
+@remove: //.post-sharing
+
+# Remove comments and related content
+@remove: //.comments
+@remove: //.comment-section
+@remove: //.disqus
+@remove: //.related-posts
+@remove: //.recommended
+@remove: //.suggestions
+
+# Remove metadata that's already extracted
+@remove: //.post-meta
+@remove: //.post-tags
+@remove: //.post-footer
+
+# ===== FINAL PROCESSING =====
+
+# Process the title and remove it from body if it exists there
+@simplify: $title
+@remove: $body//h1[. = $title]
+
+# Process subtitle
+@simplify: $subtitle
+@remove: $body//*[. = $subtitle and not(self::h2 or self::h3)]
+
+# Process kicker
+@simplify: $kicker
+@remove: $body//*[. = $kicker]
+
+# Process cover
+@simplify: $cover
+
+# Final body processing - convert to article and simplify
+<article>: $body
+@simplify: $body
+
+# Mark body as processed
+body!
+
+# ===== ENHANCED META INFORMATION =====
+# This section works for all pages, even without IV templates
+
+?true
+
+$head: /html/head
+$meta: $head/meta
+
+# Normalize meta tag format
+@set_attr(name, @property): $meta[not(@name) and @property]
+@set_attr(name, @itemprop): $meta[not(@name) and @itemprop]
+@set_attr(content, @value): $meta[not(@content) and @value]
+
+# Handle multiple authors (v2.1 improvement)
+@set_attr(name, "author"): $meta[@name="article:author"]
+
+@append(<div>): $head
+$authors_el: $@
+$authors: $meta[@name="author"]
+
+@append_to($authors_el): $authors
+@remove: $authors[@content = ./following-sibling::meta[@name="author"]/@content]
+$authors: $authors_el/meta[@name="author"]
+@before(", "): $authors[position() > 1]
+@before(@content): $authors
+@remove: $authors
+author: $authors_el
+
+# Enhanced title extraction
+title: $meta[@name="twitter:title"]/@content[normalize-space()]
+title: $meta[@name="og:title"]/@content[normalize-space()]
+title: $meta[@property="og:title"]/@content[normalize-space()]
+title: $head/title[normalize-space()]
+
+# Enhanced description extraction
+description: $meta[@name="twitter:description"]/@content[normalize-space()]
+description: $meta[@name="og:description"]/@content[normalize-space()]
+description: $meta[@property="og:description"]/@content[normalize-space()]
+description: $meta[@name="description"]/@content[normalize-space()]
+description: $body//p[normalize-space()][1]
+
+# Enhanced image extraction
+image_url: $meta[@name="twitter:image"]/@content[normalize-space()]
+image_url: $meta[@name="twitter:image:src"]/@content[normalize-space()]
+image_url: $meta[@name="og:image"]/@content[normalize-space()]
+image_url: $meta[@property="og:image"]/@content[normalize-space()]
+image_url: $meta[@name="og:image:url"]/@content[normalize-space()]
+
+# Publication date with fallbacks
+published_date: $meta[@name="article:published_time"]/@content
+published_date: $meta[@property="article:published_time"]/@content
+published_date: $meta[@name="pubdate"]/@content
+published_date: $meta[@name="date"]/@content
+
+# Modified date support (v2.1)
+modified_date: $meta[@name="article:modified_time"]/@content
+modified_date: $meta[@property="article:modified_time"]/@content
+
+# Site information
+site_name: $meta[@name="og:site_name"]/@content
+site_name: $meta[@property="og:site_name"]/@content
+site_name: $meta[@name="application-name"]/@content
+
+# Telegram-specific meta
+channel: "@Foydali_qollanmalar"
+
+# Article section/category (v2.1)
+kicker: $meta[@name="article:section"]/@content
+kicker: $meta[@property="article:section"]/@content
+
+# Tags support (v2.1)
+$tags_meta: $meta[@name="article:tag" or @property="article:tag"]
+@if($tags_meta): {
+    @append(<div>): $head
+    $tags_el: $@
+    @append_to($tags_el): $tags_meta
+    @before(", "): $tags_meta[position() > 1]
+    @before(@content): $tags_meta
+    @remove: $tags_meta
+    tags: $tags_el
+}
+
+# Language support
+lang: /html/@lang
+lang: $meta[@name="language"]/@content
+lang: $meta[@http-equiv="content-language"]/@content

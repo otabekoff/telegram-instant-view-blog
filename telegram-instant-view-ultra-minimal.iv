@@ -1,0 +1,9 @@
+# Absolute minimal template
+?exists: $("article")
+title: $("h1")
+body: $("article")
+@remove: //nav
+@remove: //footer
+<article>: $body
+@simplify: $body
+body!

@@ -1,0 +1,28 @@
+# ===== DEBUG TEMPLATE FOR JEKYLL BLOG =====
+# Minimal template to test if IV works at all
+
+# Target only blog posts
+?exists: $("article.post")
+
+# Basic content extraction
+title: $("h1.post-title")
+body: $(".post-content")
+
+# Debug what we're finding
+@debug: $("article.post")
+@debug: $("h1.post-title") 
+@debug: $(".post-content")
+
+# Basic cleanup
+@remove: //nav
+@remove: //footer
+
+# Final processing
+<article>: $body
+@simplify: $body
+body!
+
+# Meta fallback
+?true
+title: /html/head/title
+channel: "@Foydali_qollanmalar"
