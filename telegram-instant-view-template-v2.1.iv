@@ -6,26 +6,26 @@
 
 # ===== TARGETING CONDITIONS =====
 # Only generate IV for actual blog post pages
-?exists: $("article.post")
+?exists: //article[contains(concat(' ', normalize-space(@class), ' '), ' post ')]
 
 # Skip all listing/directory pages
-?not_exists: $(".posts-grid")
-?not_exists: $(".recent-posts") 
-?not_exists: $(".archive")
+?not_exists: //*[contains(concat(' ', normalize-space(@class), ' '), ' posts-grid ')]
+?not_exists: //*[contains(concat(' ', normalize-space(@class), ' '), ' recent-posts ')]
+?not_exists: //*[contains(concat(' ', normalize-space(@class), ' '), ' archive ')]
 
 # ===== REQUIRED PROPERTIES =====
 # Title (required by Telegram)
-title: $("h1.post-title")
+title: //h1[contains(concat(' ', normalize-space(@class), ' '), ' post-title ')]
 
 # Body content (required by Telegram)  
-body: $("div.post-content")
+body: //div[contains(concat(' ', normalize-space(@class), ' '), ' post-content ')]
 
 # ===== OPTIONAL PROPERTIES =====
 # Author information
-author: $(".post-author span[itemprop='name']")
+author: //*[contains(concat(' ', normalize-space(@class), ' '), ' post-author ')]//span[@itemprop='name']
 
 # Publication date
-published_date: $("time.post-date")
+published_date: //time[contains(concat(' ', normalize-space(@class), ' '), ' post-date ')]
 @datetime: $published_date
 
 # Site name for link preview
@@ -37,13 +37,13 @@ channel: "@Foydali_qollanmalar"
 # ===== ESSENTIAL CLEANUP ONLY =====
 # Remove navigation and non-essential elements that interfere with IV
 @remove: //nav
-@remove: //header[not(has-class("post-header"))]  
-@remove: //footer[not(has-class("post-footer"))]
-@remove: //.site-header
-@remove: //.site-footer
-@remove: //.post-sharing
-@remove: //.related-posts
-@remove: //.post-navigation
+@remove: //header[not(contains(concat(' ', normalize-space(@class), ' '), ' post-header '))]  
+@remove: //footer[not(contains(concat(' ', normalize-space(@class), ' '), ' post-footer '))]
+@remove: //*[contains(concat(' ', normalize-space(@class), ' '), ' site-header ')]
+@remove: //*[contains(concat(' ', normalize-space(@class), ' '), ' site-footer ')]
+@remove: //*[contains(concat(' ', normalize-space(@class), ' '), ' post-sharing ')]
+@remove: //*[contains(concat(' ', normalize-space(@class), ' '), ' related-posts ')]
+@remove: //*[contains(concat(' ', normalize-space(@class), ' '), ' post-navigation ')]
 
 # Remove scripts and styles that can cause issues
 @remove: //script[not(contains(@src, "gist.github.com"))]
