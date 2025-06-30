@@ -1,0 +1,73 @@
+# Site settings
+title: "Telegram Instant View Blog"
+description: "A modern blog optimized for Telegram's Instant View feature - lightning fast articles with perfect mobile formatting"
+url: "https://otabekoff.github.io"
+baseurl: "/telegram-instant-view-blog"
+author: "Otabek"
+email: "otabekoff@example.com"
+
+# Telegram Channel Configuration
+telegram_channel: "https://t.me/yourchannel"
+telegram_channel_name: "@yourchannel"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Permalink structure  
+permalink: /:year/:month/:day/:title/
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /:year/:month/:day/:title/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Otabek"
+
+# Exclude files
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - node_modules/
+
+# Timezone
+timezone: UTC
+
+# Social settings for Open Graph
+social:
+  name: "Otabek"
+  links:
+    - https://t.me/yourchannel
+    - https://github.com/otabekoff
+
+# SEO settings
+lang: en_US
+
+# Site verification (optional)
+google_site_verification: ""
+
+# Feed settings
+feed:
+  posts_limit: 20
+  excerpt_only: false
+
+# Pagination
+paginate: 6
+paginate_path: "/page:num/"
